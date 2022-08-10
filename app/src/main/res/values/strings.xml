@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">M3U8 Research</string>
+    <string name="see_video">See video</string>
+    <string name="use_default_video">Use Default Video</string>
+    <string name="video_url">Video URL</string>
+    <string name="another_default_button">Another Default Button</string>
+</resources>
