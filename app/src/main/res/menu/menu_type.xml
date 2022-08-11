@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/type_m3u8"
+        android:title="@string/file_m3u8" />
+    <item
+        android:id="@+id/type_mp4"
+        android:title="@string/file_mp4" />
+    <item
+        android:id="@+id/type_youtube"
+        android:title="@string/youtube" />
+</menu>

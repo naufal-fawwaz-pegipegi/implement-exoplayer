@@ -17,37 +17,56 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
-            android:hint="@string/video_url"
+            app:expandedHintEnabled="false"
             android:layout_height="wrap_content">
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/videoUrl_textEdit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/videoUrl_textEdit" />
+                android:hint="@string/video_url" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp">
+
+            <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                android:id="@+id/type_textEdit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/choose_type"
+                android:text="@string/file_mp4"
+                android:inputType="none" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/submit_button"
+            android:id="@+id/defaultPlayer_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/see_video" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/default_button"
-            android:layout_width="match_parent"
             android:layout_marginTop="40dp"
-            android:layout_height="wrap_content"
-            app:backgroundTint="@color/teal_700"
-            android:text="@string/use_default_video" />
+            android:text="@string/use_default_exoplayer"
+            app:backgroundTint="@color/teal_700" />
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/defaultAnother_button"
+            android:id="@+id/viewPager_button"
             android:layout_width="match_parent"
-            android:layout_marginTop="10dp"
             android:layout_height="wrap_content"
-            app:backgroundTint="@color/teal_700"
-            android:text="@string/another_default_button" />
+            android:layout_marginTop="10dp"
+            android:text="@string/see_view_pager_example_with_customization"
+            app:backgroundTint="@color/teal_700" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/nativePlayer_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="@string/try_native_media_player"
+            app:backgroundTint="@color/teal_700" />
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 

@@ -4,5 +4,6 @@
         <domain includeSubdomains="true">demo.unified-streaming.com</domain>
         <domain includeSubdomains="true">media.developer.dolby.com</domain>
         <domain includeSubdomains="true">sample.vodobox.net</domain>
+        <domain includeSubdomains="true">techslides.com</domain>
     </domain-config>
 </network-security-config>

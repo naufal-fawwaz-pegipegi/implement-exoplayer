@@ -4,4 +4,13 @@
     <string name="use_default_video">Use Default Video</string>
     <string name="video_url">Video URL</string>
     <string name="another_default_button">Another Default Button</string>
+    <string name="try_native_media_player">Try native media player</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="file_m3u8">File m3u8</string>
+    <string name="file_mp4">File mp4</string>
+    <string name="youtube">Youtube</string>
+    <string name="use_default_exoplayer">Use Default ExoPlayer</string>
+    <string name="see_view_pager_example_with_customization">See View Pager Example (with customization)</string>
+    <string name="choose_type">Choose Type</string>
 </resources>
