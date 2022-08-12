@@ -5,12 +5,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragments.Video1Fragment">
+    tools:context=".fragments.VideoFragment">
 
-    <com.google.android.exoplayer2.ui.StyledPlayerView
-        android:id="@+id/playerView"
+    <com.google.android.exoplayer2.ui.PlayerView
+        android:id="@+id/mainPlayer"
         android:layout_width="match_parent"
         android:layout_height="300dp"
+        android:keepScreenOn="true"
+        app:show_buffering="when_playing"
+        android:background="@color/black"
+        app:surface_type="surface_view"
+        app:controller_layout_id="@layout/custom_controller"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
