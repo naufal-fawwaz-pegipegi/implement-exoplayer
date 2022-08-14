@@ -1,6 +1,10 @@
 package com.example.m3u8research.fragments
 
 import android.annotation.SuppressLint
+import android.content.Context
+import android.content.pm.ActivityInfo
+import android.content.res.Configuration
+import android.content.res.Resources
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -8,6 +12,14 @@ import android.util.SparseArray
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
+import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import at.huber.youtubeExtractor.VideoMeta
 import at.huber.youtubeExtractor.YouTubeExtractor
@@ -21,11 +33,16 @@ import com.google.android.exoplayer2.source.MergingMediaSource
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.source.hls.HlsMediaSource
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSource
+import com.google.android.material.button.MaterialButton
+import java.lang.Exception
 
 class VideoFragment : Fragment() {
 
     private lateinit var binding: FragmentVideo1Binding
     private lateinit var player: ExoPlayer
+
+    private var isInFullscreen = false
+    private var onConfigurationChanged: OnConfigurationChanged? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -36,11 +53,93 @@ class VideoFragment : Fragment() {
         return binding.root
     }
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+
+        try {
+            onConfigurationChanged = context as OnConfigurationChanged
+        } catch (e: Exception) {
+            Toast.makeText(context, "Error ${e.localizedMessage}", Toast.LENGTH_SHORT).show()
+        }
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val url = arguments?.getString(URL_EXTRA).orEmpty()
         val type = arguments?.getString(TYPE_EXTRA).orEmpty()
         initPlayer(url, type)
+
+        val fullscreenButton = binding.mainPlayer.findViewById<MaterialButton>(R.id.exo_fullscreen)
+        val hideFullscreenButton =
+            binding.mainPlayer.findViewById<MaterialButton>(R.id.exo_minimal_fullscreen)
+
+        fullscreenButton.setOnClickListener {
+            it.isVisible = false
+            hideFullscreenButton.isVisible = true
+            isInFullscreen = true
+            setFullscreen()
+        }
+
+        hideFullscreenButton.setOnClickListener {
+            it.isVisible = false
+            fullscreenButton.isVisible = true
+            isInFullscreen = false
+            setFullscreen()
+        }
+
+        requireActivity()
+            .onBackPressedDispatcher
+            .addCallback(requireActivity(), object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    if (isInFullscreen) {
+                        hideFullscreenButton.isVisible = false
+                        fullscreenButton.isVisible = true
+                        isInFullscreen = false
+                        setFullscreen()
+                    } else {
+                       if (isEnabled) {
+                           isEnabled = false
+                           requireActivity().onBackPressed()
+                       }
+                    }
+                }
+            })
+    }
+
+    private fun setFullscreen() {
+        if (isInFullscreen) {
+            requireActivity().requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+        } else {
+            requireActivity().requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+        }
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+
+        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            WindowCompat.setDecorFitsSystemWindows(requireActivity().window, false)
+            WindowInsetsControllerCompat(requireActivity().window, binding.root).let { controller ->
+                controller.hide(WindowInsetsCompat.Type.systemBars())
+                controller.systemBarsBehavior =
+                    WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+            }
+            val params = binding.mainPlayer.layoutParams as ConstraintLayout.LayoutParams
+            params.width = ViewGroup.LayoutParams.MATCH_PARENT
+            params.height = ViewGroup.LayoutParams.MATCH_PARENT
+            binding.mainPlayer.layoutParams = params
+            onConfigurationChanged?.changeToLandscape()
+        } else {
+            WindowCompat.setDecorFitsSystemWindows(requireActivity().window, true)
+            WindowInsetsControllerCompat(requireActivity().window, binding.root).show(
+                WindowInsetsCompat.Type.systemBars()
+            )
+            val params = binding.mainPlayer.layoutParams as ConstraintLayout.LayoutParams
+            params.width = ViewGroup.LayoutParams.MATCH_PARENT
+            params.height = (250 * Resources.getSystem().displayMetrics.density + 0.5f).toInt()
+            binding.mainPlayer.layoutParams = params
+            onConfigurationChanged?.changeToPortrait()
+        }
     }
 
     @SuppressLint("StaticFieldLeak")
@@ -96,7 +195,9 @@ class VideoFragment : Fragment() {
             val mediaSource = createMediaSource(url, type)
             player.setMediaSource(mediaSource)
         }
+
         binding.mainPlayer.player = player
+
         player.prepare()
     }
 

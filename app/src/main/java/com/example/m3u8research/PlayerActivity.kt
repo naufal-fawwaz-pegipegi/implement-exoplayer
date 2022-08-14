@@ -31,6 +31,10 @@ class PlayerActivity : AppCompatActivity() {
         val url = intent.getStringExtra(URL_EXTRA).orEmpty()
         val type = intent.getStringExtra(TYPE_EXTRA).orEmpty()
         initPlayer(url, type)
+
+        binding.mainPlayer.setFullscreenButtonClickListener {
+            Log.i(TAG, "onCreate: Is fullscreen $it")
+        }
     }
 
     @SuppressLint("StaticFieldLeak")

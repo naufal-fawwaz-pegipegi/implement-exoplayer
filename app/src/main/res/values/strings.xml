@@ -13,4 +13,7 @@
     <string name="use_default_exoplayer">Use Default ExoPlayer</string>
     <string name="see_view_pager_example_with_customization">See View Pager Example (with customization)</string>
     <string name="choose_type">Choose Type</string>
+    <string name="fullscreen">Fullscreen</string>
+    <string name="minimize">Minimize</string>
+    <string name="vlc_player">VLC Player</string>
 </resources>

@@ -2,14 +2,16 @@ package com.example.m3u8research
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.example.m3u8research.databinding.ActivityViewPagerPlayerBinding
+import com.example.m3u8research.fragments.OnConfigurationChanged
 import com.example.m3u8research.fragments.VideoFragment
 import com.google.android.material.tabs.TabLayoutMediator
 
-class ViewPagerPlayerActivity : AppCompatActivity() {
+class ViewPagerPlayerActivity : AppCompatActivity(), OnConfigurationChanged {
 
     private lateinit var binding: ActivityViewPagerPlayerBinding
 
@@ -22,6 +24,18 @@ class ViewPagerPlayerActivity : AppCompatActivity() {
         binding.pager.adapter = pagerAdapter
 
         TabLayoutMediator(binding.indicatorTabLayout, binding.pager) { _, _ -> }.attach()
+    }
+
+    override fun changeToLandscape() {
+        binding.indicatorTabLayout.isVisible = false
+        supportActionBar?.hide()
+        binding.pager.isUserInputEnabled = false
+    }
+
+    override fun changeToPortrait() {
+        binding.indicatorTabLayout.isVisible = true
+        supportActionBar?.show()
+        binding.pager.isUserInputEnabled = true
     }
 }
 
