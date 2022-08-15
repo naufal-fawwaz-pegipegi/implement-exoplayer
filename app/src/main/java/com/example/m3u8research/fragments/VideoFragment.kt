@@ -15,6 +15,7 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
+import androidx.constraintlayout.utils.widget.ImageFilterView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
@@ -24,6 +25,8 @@ import androidx.fragment.app.Fragment
 import at.huber.youtubeExtractor.VideoMeta
 import at.huber.youtubeExtractor.YouTubeExtractor
 import at.huber.youtubeExtractor.YtFile
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.example.m3u8research.R
 import com.example.m3u8research.databinding.FragmentVideo1Binding
 import com.google.android.exoplayer2.ExoPlayer
@@ -40,9 +43,10 @@ class VideoFragment : Fragment() {
 
     private lateinit var binding: FragmentVideo1Binding
     private lateinit var player: ExoPlayer
-
     private var isInFullscreen = false
     private var onConfigurationChanged: OnConfigurationChanged? = null
+
+    private val defaultArtwork = "https://i.picsum.photos/id/1038/200/300.jpg?hmac=YkU1czWdP8PVibbjnh2YFlQZVnacHSntbpt41mgiXGU"
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -67,11 +71,12 @@ class VideoFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         val url = arguments?.getString(URL_EXTRA).orEmpty()
         val type = arguments?.getString(TYPE_EXTRA).orEmpty()
+        setArtwork()
         initPlayer(url, type)
 
-        val fullscreenButton = binding.mainPlayer.findViewById<MaterialButton>(R.id.exo_fullscreen)
+        val fullscreenButton = binding.mainPlayer.findViewById<ImageFilterView>(R.id.exo_fullscreen)
         val hideFullscreenButton =
-            binding.mainPlayer.findViewById<MaterialButton>(R.id.exo_minimal_fullscreen)
+            binding.mainPlayer.findViewById<ImageFilterView>(R.id.exo_minimal_fullscreen)
 
         fullscreenButton.setOnClickListener {
             it.isVisible = false
@@ -104,6 +109,15 @@ class VideoFragment : Fragment() {
                     }
                 }
             })
+    }
+
+    private fun setArtwork() {
+        Glide.with(requireContext())
+            .load(defaultArtwork)
+            .transition(DrawableTransitionOptions.withCrossFade())
+            .centerInside()
+            .into(binding.mainPlayer.findViewById(com.google.android.exoplayer2.ui.R.id.exo_artwork))
+        binding.mainPlayer.useArtwork = true
     }
 
     private fun setFullscreen() {

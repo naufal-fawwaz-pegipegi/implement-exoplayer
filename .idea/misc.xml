@@ -4,6 +4,8 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Users/Pegipegi-PC/AndroidStudioProjects/M3U8Research/app/src/main/res/drawable/default_pager_dot.xml" value="0.1655" />
+        <entry key="..\:/Users/Pegipegi-PC/AndroidStudioProjects/M3U8Research/app/src/main/res/drawable/ic_fullscreen.xml" value="0.109" />
+        <entry key="..\:/Users/Pegipegi-PC/AndroidStudioProjects/M3U8Research/app/src/main/res/drawable/ic_fullscreen_exit.xml" value="0.109" />
         <entry key="..\:/Users/Pegipegi-PC/AndroidStudioProjects/M3U8Research/app/src/main/res/drawable/ic_pause.xml" value="0.11" />
         <entry key="..\:/Users/Pegipegi-PC/AndroidStudioProjects/M3U8Research/app/src/main/res/drawable/scrubble_custom.xml" value="0.11" />
         <entry key="..\:/Users/Pegipegi-PC/AndroidStudioProjects/M3U8Research/app/src/main/res/drawable/selected_pager_dot.xml" value="0.1655" />

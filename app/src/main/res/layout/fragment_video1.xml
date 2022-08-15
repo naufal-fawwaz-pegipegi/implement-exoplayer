@@ -17,6 +17,7 @@
         app:surface_type="surface_view"
         app:resize_mode="fill"
         app:use_controller="true"
+        app:use_artwork="true"
         app:controller_layout_id="@layout/custom_controller"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
