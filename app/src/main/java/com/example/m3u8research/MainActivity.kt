@@ -36,40 +36,40 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setOnClickListener() {
-        binding.defaultPlayerButton.setOnClickListener {
-            val url = binding.videoUrlTextEdit.text.toString()
-
-            val intent = Intent(this, PlayerActivity::class.java)
-            intent.putExtra(PlayerActivity.TYPE_EXTRA, binding.typeTextEdit.text.toString())
-            intent.putExtra(PlayerActivity.URL_EXTRA, url.ifBlank { urlDefault })
-            startActivity(intent)
-        }
-
-        binding.viewPagerButton.setOnClickListener {
-            val url = binding.videoUrlTextEdit.text.toString()
-
-            val intent = Intent(this, ViewPagerPlayerActivity::class.java)
-            intent.putExtra(PlayerActivity.TYPE_EXTRA, binding.typeTextEdit.text.toString())
-            intent.putExtra(PlayerActivity.URL_EXTRA, url.ifBlank { urlDefault })
-            startActivity(intent)
-        }
-
-        binding.nativePlayerButton.setOnClickListener {
-            val url = binding.videoUrlTextEdit.text.toString()
-
-            val intent = Intent(this, PlayerPlainActivity::class.java)
-            intent.putExtra(PlayerActivity.TYPE_EXTRA, binding.typeTextEdit.text.toString())
-            intent.putExtra(PlayerActivity.URL_EXTRA, url.ifBlank { urlDefault })
-            startActivity(intent)
-        }
-
-//        binding.vlcPlayerButton.setOnClickListener {
+//        binding.defaultPlayerButton.setOnClickListener {
 //            val url = binding.videoUrlTextEdit.text.toString()
 //
-//            val intent = Intent(this, VLCActivity::class.java)
-//            intent.putExtra(VLCActivity.EXTRA_URL, url.ifBlank { urlDefault })
+//            val intent = Intent(this, PlayerActivity::class.java)
+//            intent.putExtra(PlayerActivity.TYPE_EXTRA, binding.typeTextEdit.text.toString())
+//            intent.putExtra(PlayerActivity.URL_EXTRA, url.ifBlank { urlDefault })
 //            startActivity(intent)
 //        }
+//
+//        binding.viewPagerButton.setOnClickListener {
+//            val url = binding.videoUrlTextEdit.text.toString()
+//
+//            val intent = Intent(this, ViewPagerPlayerActivity::class.java)
+//            intent.putExtra(PlayerActivity.TYPE_EXTRA, binding.typeTextEdit.text.toString())
+//            intent.putExtra(PlayerActivity.URL_EXTRA, url.ifBlank { urlDefault })
+//            startActivity(intent)
+//        }
+//
+//        binding.nativePlayerButton.setOnClickListener {
+//            val url = binding.videoUrlTextEdit.text.toString()
+//
+//            val intent = Intent(this, PlayerPlainActivity::class.java)
+//            intent.putExtra(PlayerActivity.TYPE_EXTRA, binding.typeTextEdit.text.toString())
+//            intent.putExtra(PlayerActivity.URL_EXTRA, url.ifBlank { urlDefault })
+//            startActivity(intent)
+//        }
+
+        binding.vlcPlayerButton.setOnClickListener {
+            val url = binding.videoUrlTextEdit.text.toString()
+
+            val intent = Intent(this, VLCActivity::class.java)
+            intent.putExtra(VLCActivity.EXTRA_URL, url.ifBlank { urlDefault })
+            startActivity(intent)
+        }
     }
 
 

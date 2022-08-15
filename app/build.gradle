@@ -41,10 +41,10 @@ dependencies {
     implementation 'com.google.android.material:material:1.6.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
 
-    implementation 'com.google.android.exoplayer:exoplayer:2.18.1'
-    implementation 'com.github.HaarigerHarald:android-youtubeExtractor:master-SNAPSHOT'
+//    implementation 'com.google.android.exoplayer:exoplayer:2.18.1'
+//    implementation 'com.github.HaarigerHarald:android-youtubeExtractor:master-SNAPSHOT'
 
-//    implementation 'org.videolan.android:libvlc-all:3.3.13'
+    implementation 'org.videolan.android:libvlc-all:3.3.13'
 //    implementation "de.mrmaffen:vlc-android-sdk:2.0.6"
 
 //    implementation 'com.github.bumptech.glide:glide:4.13.2'
