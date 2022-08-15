@@ -63,13 +63,13 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        binding.vlcPlayerButton.setOnClickListener {
-            val url = binding.videoUrlTextEdit.text.toString()
-
-            val intent = Intent(this, VLCActivity::class.java)
-            intent.putExtra(VLCActivity.EXTRA_URL, url.ifBlank { urlDefault })
-            startActivity(intent)
-        }
+//        binding.vlcPlayerButton.setOnClickListener {
+//            val url = binding.videoUrlTextEdit.text.toString()
+//
+//            val intent = Intent(this, VLCActivity::class.java)
+//            intent.putExtra(VLCActivity.EXTRA_URL, url.ifBlank { urlDefault })
+//            startActivity(intent)
+//        }
     }
 
 
