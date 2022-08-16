@@ -1,53 +1,71 @@
 package com.example.m3u8research
 
 import android.annotation.SuppressLint
+import android.app.Activity
+import android.content.Intent
 import android.net.Uri
+import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.util.SparseArray
-import android.view.TextureView
-import android.view.View
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
+import androidx.constraintlayout.utils.widget.ImageFilterView
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
+import androidx.core.view.isVisible
 import at.huber.youtubeExtractor.VideoMeta
 import at.huber.youtubeExtractor.YouTubeExtractor
 import at.huber.youtubeExtractor.YtFile
-import com.example.m3u8research.databinding.ActivityPlayerBinding
+import com.example.m3u8research.databinding.ActivityFullscreenBinding
+import com.example.m3u8research.fragments.VideoFragment
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
-import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.source.MediaSource
 import com.google.android.exoplayer2.source.MergingMediaSource
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.source.hls.HlsMediaSource
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSource
-import com.google.android.exoplayer2.upstream.cache.Cache
-import com.google.android.exoplayer2.upstream.cache.CacheDataSource
 
+class FullscreenActivity : AppCompatActivity() {
 
-class PlayerActivity : AppCompatActivity() {
-
-    private lateinit var binding: ActivityPlayerBinding
-    private lateinit var player: ExoPlayer
+    private var player: ExoPlayer? = null
+    private lateinit var binding: ActivityFullscreenBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityPlayerBinding.inflate(layoutInflater)
+        binding = ActivityFullscreenBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        val url = intent.getStringExtra(URL_EXTRA).orEmpty()
-        val type = intent.getStringExtra(TYPE_EXTRA).orEmpty()
-        initPlayer(url, type)
-
-        binding.mainPlayer.setFullscreenButtonClickListener {
-            Log.i(TAG, "onCreate: Is fullscreen $it")
+        supportActionBar?.hide()
+        WindowCompat.setDecorFitsSystemWindows(this.window, false)
+        WindowInsetsControllerCompat(this.window, binding.root).let { controller ->
+            controller.hide(WindowInsetsCompat.Type.systemBars())
+            controller.systemBarsBehavior =
+                WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
         }
+
+        val position = intent.getLongExtra("extra_position", 0)
+        val url = intent.getStringExtra("extra_url").toString()
+        val type = intent.getStringExtra("extra_type").toString()
+        val isPlaying = intent.getBooleanExtra("extra_playing", false)
+
+        binding.mainPlayer.findViewById<ImageFilterView>(R.id.exo_fullscreen).isVisible = false
+        binding.mainPlayer.findViewById<ImageFilterView>(R.id.exo_minimal_fullscreen).isVisible = true
+        binding.mainPlayer.findViewById<ImageFilterView>(R.id.exo_minimal_fullscreen).setOnClickListener {
+            val intent = Intent()
+            intent.putExtra("extra_position", player?.currentPosition ?: 0L)
+            intent.putExtra("extra_playing", player?.isPlaying)
+            setResult(Activity.RESULT_OK, intent)
+            finish()
+        }
+
+        initPlayer(url, type, position, isPlaying)
     }
 
     @SuppressLint("StaticFieldLeak")
-    private fun initPlayer(url: String, type: String) {
+    private fun initPlayer(url: String, type: String, position: Long, isPlaying: Boolean) {
         player = ExoPlayer.Builder(this).build()
         if (type == getString(R.string.youtube)) {
-            object : YouTubeExtractor(this@PlayerActivity) {
+            object : YouTubeExtractor(this) {
                 override fun onExtractionComplete(
                     ytFiles: SparseArray<YtFile>?,
                     videoMeta: VideoMeta?
@@ -82,7 +100,7 @@ class PlayerActivity : AppCompatActivity() {
                         .Factory(DefaultHttpDataSource.Factory())
                         .createMediaSource(MediaItem.fromUri(videoUrl))
 
-                    player.setMediaSource(
+                    player?.setMediaSource(
                         MergingMediaSource(
                             true,
                             videoSource,
@@ -94,11 +112,13 @@ class PlayerActivity : AppCompatActivity() {
             }.extract(url)
         } else {
             val mediaSource = createMediaSource(url, type)
-            player.setMediaSource(mediaSource)
+            player?.setMediaSource(mediaSource)
         }
+
         binding.mainPlayer.player = player
-        player.prepare()
-        player.playWhenReady = false
+        player?.prepare()
+        player?.seekTo(position)
+        player?.playWhenReady = isPlaying
     }
 
     private fun createMediaSource(url: String, type: String): MediaSource {
@@ -114,11 +134,11 @@ class PlayerActivity : AppCompatActivity() {
         Log.i(TAG, "createMediaSource: Type is $type must be ${getString(R.string.file_mp4)}")
 
         when (type) {
-            getString(R.string.file_mp4) -> {
+            VideoFragment.TYPE_MP4 -> {
                 return ProgressiveMediaSource.Factory(factory).createMediaSource(mediaItem)
             }
 
-            getString(R.string.file_m3u8) -> {
+            VideoFragment.TYPE_M3U8 -> {
                 return HlsMediaSource.Factory(factory).createMediaSource(mediaItem)
             }
         }
@@ -129,15 +149,11 @@ class PlayerActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
 
-        if (::player.isInitialized) {
-            player.stop()
-            player.release()
-        }
+        player?.stop()
+        player?.release()
     }
 
     companion object {
-        const val URL_EXTRA = "url"
-        const val TYPE_EXTRA = "type"
-        private val TAG = PlayerActivity::class.simpleName
+        private val TAG = FullscreenActivity::class.simpleName
     }
 }

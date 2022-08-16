@@ -1,19 +1,34 @@
 package com.example.m3u8research.fragments
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.content.res.Configuration
 import android.content.res.Resources
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
+import android.media.ThumbnailUtils
 import android.net.Uri
+import android.opengl.Visibility
 import android.os.Bundle
+import android.provider.MediaStore
 import android.util.Log
 import android.util.SparseArray
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.ActivityResultCallback
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContract
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.constraintlayout.utils.widget.ImageFilterView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.WindowCompat
@@ -24,10 +39,18 @@ import androidx.fragment.app.Fragment
 import at.huber.youtubeExtractor.VideoMeta
 import at.huber.youtubeExtractor.YouTubeExtractor
 import at.huber.youtubeExtractor.YtFile
+import com.bumptech.glide.Glide
+import com.bumptech.glide.TransitionOptions
+import com.bumptech.glide.load.resource.bitmap.BitmapTransitionOptions
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
+import com.example.m3u8research.FullscreenActivity
 import com.example.m3u8research.R
 import com.example.m3u8research.databinding.FragmentVideo1Binding
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
+import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.source.MediaSource
 import com.google.android.exoplayer2.source.MergingMediaSource
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
@@ -35,6 +58,8 @@ import com.google.android.exoplayer2.source.hls.HlsMediaSource
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSource
 import com.google.android.material.button.MaterialButton
 import java.lang.Exception
+import java.net.HttpURLConnection
+import java.net.URL
 
 class VideoFragment : Fragment() {
 
@@ -43,7 +68,7 @@ class VideoFragment : Fragment() {
     private var isInFullscreen = false
     private var onConfigurationChanged: OnConfigurationChanged? = null
 
-    private val defaultArtwork = "https://i.picsum.photos/id/1038/200/300.jpg?hmac=YkU1czWdP8PVibbjnh2YFlQZVnacHSntbpt41mgiXGU"
+    private val defaultArtwork = "https://via.placeholder.com/300/09f/fff.png"
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -64,6 +89,20 @@ class VideoFragment : Fragment() {
         }
     }
 
+    private val fullscreenActivityResult: ActivityResultLauncher<Intent> =
+        registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult()
+        ) {
+            if (it.resultCode == Activity.RESULT_OK) {
+                val position = it.data?.getLongExtra("extra_position", 0L) ?: 0L
+                val isPlaying = it.data?.getBooleanExtra("extra_playing", false) ?: false
+                player.seekTo(position)
+                if (isPlaying) {
+                    player.play()
+                }
+            }
+        }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val url = arguments?.getString(URL_EXTRA).orEmpty()
@@ -76,17 +115,24 @@ class VideoFragment : Fragment() {
             binding.mainPlayer.findViewById<ImageFilterView>(R.id.exo_minimal_fullscreen)
 
         fullscreenButton.setOnClickListener {
-            it.isVisible = false
-            hideFullscreenButton.isVisible = true
-            isInFullscreen = true
-            setFullscreen()
+            val intent = Intent(requireContext(), FullscreenActivity::class.java)
+            intent.putExtra("extra_url", url)
+            intent.putExtra("extra_type", type)
+            intent.putExtra("extra_position", player.currentPosition)
+            intent.putExtra("extra_playing", player.isPlaying)
+            fullscreenActivityResult.launch(intent)
+
+//            it.isVisible = false
+//            hideFullscreenButton.isVisible = true
+//            isInFullscreen = true
+//            setFullscreen()
         }
 
         hideFullscreenButton.setOnClickListener {
-            it.isVisible = false
-            fullscreenButton.isVisible = true
-            isInFullscreen = false
-            setFullscreen()
+//            it.isVisible = false
+//            fullscreenButton.isVisible = true
+//            isInFullscreen = false
+//            setFullscreen()
         }
 
         requireActivity()
@@ -99,10 +145,10 @@ class VideoFragment : Fragment() {
                         isInFullscreen = false
                         setFullscreen()
                     } else {
-                       if (isEnabled) {
-                           isEnabled = false
-                           requireActivity().onBackPressed()
-                       }
+                        if (isEnabled) {
+                            isEnabled = false
+                            requireActivity().onBackPressed()
+                        }
                     }
                 }
             })
@@ -110,11 +156,39 @@ class VideoFragment : Fragment() {
 
     private fun setArtwork() {
 //        Glide.with(requireContext())
+//            .asBitmap()
 //            .load(defaultArtwork)
-//            .transition(DrawableTransitionOptions.withCrossFade())
-//            .centerInside()
-//            .into(binding.mainPlayer.findViewById(com.google.android.exoplayer2.ui.R.id.exo_artwork))
-//        binding.mainPlayer.useArtwork = true
+//            .into(object : CustomTarget<Bitmap>() {
+//                override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+//                    val drawable = BitmapDrawable(requireContext().resources, resource)
+//                    binding.mainPlayer.defaultArtwork = drawable
+//                    binding.mainPlayer.useArtwork = true
+//                }
+//
+//                override fun onLoadCleared(placeholder: Drawable?) {
+//                    // No-ops
+//                }
+//            })
+
+//        Glide.with(requireContext())
+//            .asBitmap()
+//            .load(defaultArtwork)
+//            .transition(BitmapTransitionOptions.withCrossFade())
+//            .into(binding.thumbnailVideo)
+    }
+
+    private fun getDrawableFromUrl(): Drawable {
+        try {
+            val urlObj = URL(defaultArtwork)
+            val connection = urlObj.openConnection() as HttpURLConnection
+            connection.doInput = true
+            connection.connect()
+            val input = connection.inputStream
+            val bitmap = BitmapFactory.decodeStream(input)
+            return BitmapDrawable(requireContext().resources, bitmap)
+        } catch (e: Exception) {
+            throw e
+        }
     }
 
     private fun setFullscreen() {
@@ -208,8 +282,9 @@ class VideoFragment : Fragment() {
         }
 
         binding.mainPlayer.player = player
-
         player.prepare()
+        player.seekTo(0)
+        player.playWhenReady = false
     }
 
     private fun createMediaSource(url: String, type: String): MediaSource {
@@ -241,19 +316,12 @@ class VideoFragment : Fragment() {
         super.onPause()
         if (::player.isInitialized) {
             player.pause()
-            player.seekTo(0)
-        }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        if (::player.isInitialized) {
-            player.play()
         }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
+        Log.i(TAG, "onDestroyView")
 
         if (::player.isInitialized) {
             player.stop()

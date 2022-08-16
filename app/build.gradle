@@ -47,8 +47,8 @@ dependencies {
 //    implementation 'org.videolan.android:libvlc-all:3.3.13'
 //    implementation "de.mrmaffen:vlc-android-sdk:2.0.6"
 
-//    implementation 'com.github.bumptech.glide:glide:4.13.2'
-//    annotationProcessor 'com.github.bumptech.glide:compiler:4.13.2'
+    implementation 'com.github.bumptech.glide:glide:4.13.2'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.13.2'
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'

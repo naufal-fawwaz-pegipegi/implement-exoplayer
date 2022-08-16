@@ -42,7 +42,7 @@ class ViewPagerPlayerActivity : AppCompatActivity(), OnConfigurationChanged {
 class VideoPagerAdapter(fragment: FragmentActivity) : FragmentStateAdapter(fragment) {
 
     private val defaultM3u8 = "https://cph-p2p-msl.akamaized.net/hls/live/2000341/test/master.m3u8"
-    private val defaultMp4 = "http://techslides.com/demos/sample-videos/small.mp4"
+    private val defaultMp4 = "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4"
     private val defaultYoutube = "https://www.youtube.com/watch?v=2x1eaCUtcMM"
 
     override fun getItemCount(): Int = 2

@@ -4,16 +4,22 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".PlayerActivity">
+    tools:context=".FullscreenActivity">
 
-    <com.google.android.exoplayer2.ui.StyledPlayerView
+    <com.google.android.exoplayer2.ui.PlayerView
         android:id="@+id/mainPlayer"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:keepScreenOn="true"
+        app:default_artwork="@drawable/ic_launcher_background"
+        app:use_artwork="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.498"
+        app:resize_mode="fill"
         app:show_buffering="when_playing"
         app:surface_type="texture_view"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:use_controller="true"
+        app:controller_layout_id="@layout/custom_controller" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

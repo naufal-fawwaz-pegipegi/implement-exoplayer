@@ -12,14 +12,36 @@
         android:layout_width="match_parent"
         android:layout_height="250dp"
         android:keepScreenOn="true"
-        app:show_buffering="when_playing"
-        android:background="@color/black"
-        app:surface_type="surface_view"
-        app:resize_mode="fill"
-        app:use_controller="true"
+        app:default_artwork="@drawable/ic_launcher_background"
         app:use_artwork="true"
-        app:controller_layout_id="@layout/custom_controller"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.498"
+        app:resize_mode="fill"
+        app:show_buffering="when_playing"
+        app:surface_type="texture_view"
+        app:use_controller="true"
+        app:auto_show="false"
+        app:controller_layout_id="@layout/custom_controller" />
+
+<!--    <androidx.constraintlayout.utils.widget.ImageFilterView-->
+<!--        android:id="@+id/thumbnailVideo"-->
+<!--        android:layout_width="0dp"-->
+<!--        android:scaleType="centerCrop"-->
+<!--        android:layout_height="0dp"-->
+<!--        app:layout_constraintBottom_toBottomOf="@id/mainPlayer"-->
+<!--        app:layout_constraintTop_toTopOf="@id/mainPlayer"-->
+<!--        app:layout_constraintEnd_toEndOf="@id/mainPlayer"-->
+<!--        app:layout_constraintStart_toStartOf="@id/mainPlayer" />-->
+
+<!--    <com.google.android.exoplayer2.ui.PlayerControlView-->
+<!--        android:id="@+id/controller"-->
+<!--        android:layout_width="0dp"-->
+<!--        android:layout_height="0dp"-->
+<!--        app:layout_constraintBottom_toBottomOf="@id/mainPlayer"-->
+<!--        app:layout_constraintTop_toTopOf="@id/mainPlayer"-->
+<!--        app:layout_constraintEnd_toEndOf="@id/mainPlayer"-->
+<!--        app:layout_constraintStart_toStartOf="@id/mainPlayer"-->
+<!--        app:controller_layout_id="@layout/custom_controller" />-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>
